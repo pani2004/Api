@@ -7,7 +7,6 @@ from io import BytesIO
 from flask_cors import CORS
 from PIL import Image, ImageDraw, ImageFont
 import base64
-
 app = Flask(__name__)
 CORS(app)
 
@@ -18,8 +17,13 @@ model = load_model(model_path)
 
 labels = {0: 'Normal', 1: 'Tuberculosis', 2: 'Pneumonia'}
 
+@app.route('/')
+def home():
+    return "Welcome to the X-ray prediction API"
+
 @app.route('/predict', methods=['POST'])
 def predict():
+    log_memory_usage()
     if 'image' not in request.files:
         return jsonify({'error': 'No image file found in the request'}), 400
 
@@ -63,4 +67,4 @@ def predict():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True) 
+    app.run(host='0.0.0.0', port=5000, debug=True)
